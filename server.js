@@ -57,12 +57,6 @@ app.get('/api/admin/dashboard', async (req, res) => {
   }
 });
 
-// 5. START THE SERVER
-const PORT = process.env.PORT || 3000;
-app.listen(PORT, '0.0.0.0', () => {
-  console.log(`🚀 Server is running and listening on port ${PORT}`);
-});
-
 // 5. ROUTE TO CLEAR DATABASE (Requires Admin Action)
 app.delete('/api/admin/reset', async (req, res) => {
   try {
@@ -75,3 +69,11 @@ app.delete('/api/admin/reset', async (req, res) => {
     res.status(500).json({ error: "Failed to reset database" });
   }
 });
+
+
+// 5. START THE SERVER
+const PORT = process.env.PORT || 3000;
+app.listen(PORT, '0.0.0.0', () => {
+  console.log(`🚀 Server is running and listening on port ${PORT}`);
+});
+
