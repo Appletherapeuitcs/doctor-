@@ -15,10 +15,11 @@ let db;
 async function connectDB() {
   try {
     await client.connect();
-    db = client.db("AppleTherapeutics"); // This creates your database
-    console.log("Connected to MongoDB!");
+    db = client.db("AppleTherapeutics");
+    console.log("✅ Connected to MongoDB successfully!");
   } catch (err) {
-    console.error("MongoDB connection error:", err);
+    console.error("❌ MongoDB connection error:", err.message);
+    // Don't crash the whole app if DB fails to connect initially
   }
 }
 connectDB();
@@ -30,16 +31,18 @@ app.post('/requests', async (req, res) => {
       timestamp: req.body.timestamp || new Date().toISOString()
     };
     
-    // Saves the request into a collection called 'sample_requests'
     await db.collection('sample_requests').insertOne(requestData);
-    console.log("New request saved:", requestData);
+    console.log("📦 New request saved:", requestData);
     
     res.status(200).json({ message: "Request captured successfully" });
   } catch (error) {
-    console.error(error);
+    console.error("❌ Error saving request:", error);
     res.status(500).json({ error: "Failed to save request" });
   }
 });
 
+// THE FIX FOR RENDER: Explicitly bind to 0.0.0.0
 const PORT = process.env.PORT || 3000;
-app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
+app.listen(PORT, '0.0.0.0', () => {
+  console.log(`🚀 Server is running and listening on port ${PORT}`);
+});
