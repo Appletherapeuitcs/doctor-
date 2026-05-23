@@ -41,6 +41,19 @@ app.post('/requests', async (req, res) => {
   }
 });
 
+// ADMIN DASHBOARD ROUTE: Fetch all requests from the database
+app.get('/api/admin/dashboard', async (req, res) => {
+  try {
+    // Fetches all requests and sorts them by newest first
+    const allRequests = await db.collection('sample_requests').find().sort({ timestamp: -1 }).toArray();
+    res.status(200).json(allRequests);
+  } catch (error) {
+    console.error("❌ Error fetching data:", error);
+    res.status(500).json({ error: "Failed to fetch dashboard data" });
+  }
+});
+
+
 // THE FIX FOR RENDER: Explicitly bind to 0.0.0.0
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, '0.0.0.0', () => {
