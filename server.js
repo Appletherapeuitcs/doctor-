@@ -4,9 +4,15 @@ const { MongoClient } = require('mongodb');
 
 const app = express();
 app.use(express.json());
-app.use(cors());
 
-// PASTE YOUR MONGODB CONNECTION STRING HERE
+// 1. Allow the Hostinger website to fetch data
+const corsOptions = {
+  origin: ['https://palegreen-dotterel-629054.hostingersite.com', 'http://localhost:3000'],
+  optionsSuccessStatus: 200
+};
+app.use(cors(corsOptions));
+
+// 2. CONNECT TO MONGODB (Updated with exact credentials)
 const uri = "mongodb+srv://digital_db_user:Apple2026@cluster0.cmdl06a.mongodb.net/?appName=Cluster0"; 
 const client = new MongoClient(uri);
 
@@ -19,11 +25,11 @@ async function connectDB() {
     console.log("✅ Connected to MongoDB successfully!");
   } catch (err) {
     console.error("❌ MongoDB connection error:", err.message);
-    // Don't crash the whole app if DB fails to connect initially
   }
 }
-connectDB();
+connectDB(); // This triggers the connection!
 
+// 3. ROUTE TO RECEIVE DATA FROM DOCTORS
 app.post('/requests', async (req, res) => {
   try {
     const requestData = {
@@ -32,8 +38,7 @@ app.post('/requests', async (req, res) => {
     };
     
     await db.collection('sample_requests').insertOne(requestData);
-    console.log("📦 New request saved:", requestData);
-    
+    console.log("📦 New request saved:", requestData.product_name);
     res.status(200).json({ message: "Request captured successfully" });
   } catch (error) {
     console.error("❌ Error saving request:", error);
@@ -41,10 +46,9 @@ app.post('/requests', async (req, res) => {
   }
 });
 
-// ADMIN DASHBOARD ROUTE: Fetch all requests from the database
+// 4. ROUTE TO SEND DATA TO ADMIN DASHBOARD
 app.get('/api/admin/dashboard', async (req, res) => {
   try {
-    // Fetches all requests and sorts them by newest first
     const allRequests = await db.collection('sample_requests').find().sort({ timestamp: -1 }).toArray();
     res.status(200).json(allRequests);
   } catch (error) {
@@ -53,8 +57,7 @@ app.get('/api/admin/dashboard', async (req, res) => {
   }
 });
 
-
-// THE FIX FOR RENDER: Explicitly bind to 0.0.0.0
+// 5. START THE SERVER
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, '0.0.0.0', () => {
   console.log(`🚀 Server is running and listening on port ${PORT}`);
