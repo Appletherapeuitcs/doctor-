@@ -62,3 +62,16 @@ const PORT = process.env.PORT || 3000;
 app.listen(PORT, '0.0.0.0', () => {
   console.log(`🚀 Server is running and listening on port ${PORT}`);
 });
+
+// 5. ROUTE TO CLEAR DATABASE (Requires Admin Action)
+app.delete('/api/admin/reset', async (req, res) => {
+  try {
+    // deleteMany({}) deletes all documents inside the collection
+    await db.collection('sample_requests').deleteMany({});
+    console.log("🗑️ Database wiped clean for the new week.");
+    res.status(200).json({ message: "Database reset successfully" });
+  } catch (error) {
+    console.error("❌ Error resetting database:", error);
+    res.status(500).json({ error: "Failed to reset database" });
+  }
+});
