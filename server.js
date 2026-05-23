@@ -7,7 +7,7 @@ app.use(express.json());
 app.use(cors());
 
 // PASTE YOUR MONGODB CONNECTION STRING HERE
-const uri = "mongodb+srv://YOUR_USERNAME:YOUR_PASSWORD@cluster0.xxxx.mongodb.net/?retryWrites=true&w=majority"; 
+const uri = "mongodb+srv://digital_db_user:HlFvwmTpdPJJioA4@cluster0.cmdl06a.mongodb.net/?appName=Cluster0"; 
 const client = new MongoClient(uri);
 
 let db;
